@@ -1,0 +1,7 @@
+﻿When getting an SD and specifying -ObjectType, there is currently no way to specify if it is a Container or DS object from command line. (Can an AdaptedSecurityDescriptorPathInformation object be created and passed as the input object in that scenario?? In that case, should the -ObjectType be removed from PacCommandOption ??)
+
+Speaking of -SDOption, specifying ObjectType is only valid for strings passed to "InputObject". If an actual object goes through, the -ObjectType will be ignored.
+
+-BypassAclCheck has no impact when trying to resolve child registry keys on keys you don't have access to. To fix it, probably have to do some P/Invoke calls to enumerate keys :(
+
+$PacOptions.DontAbbreviateAppliesTo

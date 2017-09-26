@@ -1,0 +1,22 @@
+﻿- No error message given if you provide a bad non-literal path...
+- BypassAclCheck doesn't seem to show InheritedFrom anymore if you don't have permission to view it. I thought this was working at one point?? Also, I don't know if it ever worked w/ RegistryKeys
+- If InheritedFrom can't work w/BypassAclCheck, change GetInheritanceSource() to IEnumerable for lazy enumeration
+- Access and Audit FL properties of security descriptor have hard coded 50 value. Also, formatting file has InheritanceEnabled, Disabled, and others defined more than once. All of these should go somewhere as static constants so that they are defined once.
+- Should AdaptedACE path be a string instead of an SdPath? What about open handles? Should all ties to parent SD object be cut?
+- Test PurgePrincipal on an AD object. Modify*Rule() might be mad if there are no GUIDs
+- The following doesn't work. I think it might be b/c the PathInfo is using handles. Check into it. It might be time to finally close handles when BypassAclMode is enabled, and have the module just use the path when the handle is invalid... 
+
+- Can't do anything on folders you can't traverse into. Ex: if you don't have access to c:\temp, you can't provide c:\temp\subfolder as a path b/c of ResolveFilePaths(). Have ResolveFilePaths() just treat each section it can't access as a literal path??
+- BypassAclMode needs lots of work. Handle the following scenarios:
+    * First, close handles after done getting/setting SD
+    * desiredAccess should be set depending on what method is calling it, e.g., GetAdaptedSecurityDescriptor() only calls without Write permissions/SeRestorePrivilege, SetSecurityDescriptor() calls with both permissions (or maybe just write?). Handles are closed as soon as we're done with them anyway...
+      This also means that BeginProcessing() shouldn't handle checking for BypassAclCheck for the modification cmdlets (think about when a mix of SD objects and strings are passed)
+- All Add/Set/Reset methods and cmdlets need to be tested since helper method has been significantly changed
+- AccessMaskDisplay is doing potentially extra work when it's time to group ACEs. Instead of ToString() generating a string each time, perhaps make a field or property that is lazily initialized, and cleared out if AccessMask is updated so it will be initialized again...
+
+- Can't save WMI Namespace audit entries. This affects cAccessControlEntry, too. Problem is enabling privileges.
+- Principal param can't be SID string. Need to think about at least having cAccessControlEntry at least checking to see if input was a string version of a SID (interactive commands can still pass a SID object)
+- Add-PacAccessControlEntry $RegKey -Principal everyone -RegistryRights ReadKey -PacSDOption (New-PacSDOption -BypassAclCheck) -PassThru | Set-PacSecurityDescriptor -PacSDOption (New-PacSDOption -BypassAclCheck)
+    ^ that doesn't work b/c SafeHandle is closed. Isn't it supposed to be opened back up? Also, figure out if we're even going to support setting w/ BypassAclCheck
+- Fully qualified PS paths don't work. This should work for at least registry keys and filesystem objects. Example: (Get-Acl c:\).Path | get-pacaccesscontrolentry
+- Security descriptor paths don't work as InputObject, either. Example (Get-PacSecurityDescriptor c:\).Path | Get-PacAccessControlEntry

@@ -1,0 +1,2 @@
+# Test the number of open handles when getting security descriptors. That's a real concern if we let the handles stay open w/ massive calls to Get-SecurityDescriptor. Calls
+# to Get-AccessControl, etc, shouldn't keep them open, though, b/c RegistryKey and SafeHandle instances should be GCed.

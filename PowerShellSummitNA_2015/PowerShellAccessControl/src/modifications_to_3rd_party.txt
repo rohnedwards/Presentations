@@ -1,0 +1,12 @@
+Microsoft.Experimental.IO: Removed 'Properties' folder that had some assemby properties.
+Microsoft.Experimental.IO: Replaced all instances of 'DriveNotFoundException' with 'System.IO.DriveNotFoundException'
+Microsoft.Experimental.IO: Replace all instances of 'NativeMethods' with 'Microsoft.Experimental.IO.Interop.NativeMethods' to disambiguate from NativeMethods in PrivilegeClass
+Microsoft.Experimental.IO: Made modifications detailed here: https://bcl.codeplex.com/workitem/7589  to add UNC path support
+
+        private static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern, bool includeDirectories, bool includeFiles) {
+---- became ----
+        internal static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern, bool includeDirectories, bool includeFiles) {
+
+
+PrivilegeClass: Added 'PrivilegeName' property to 'Privilege' class
+

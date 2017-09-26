@@ -1,0 +1,1 @@
+Add-Type -Path $PSScriptRoot\..\src\source.cs -OutputAssembly $PSScriptRoot\ROE.PowerShellAccessControl.dll -ReferencedAssemblies System.DirectoryServices, System.Management, Microsoft.Management.Infrastructure -IgnoreWarnings
