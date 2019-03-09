@@ -1,0 +1,4 @@
+~*.pptx
+*.accdb
+/delete
+/.vscode/*
